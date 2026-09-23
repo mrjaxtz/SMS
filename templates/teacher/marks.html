@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Marks{% endblock %}
+{% block nav %}
+<a href="{{ url_for('teacher_dashboard') }}">🏫 My Classes</a>
+<a href="{{ url_for('teacher_students') }}">🧑‍🎓 Students</a>
+<a href="{{ url_for('teacher_attendance') }}">✅ Mark Attendance</a>
+<a class="active" href="{{ url_for('teacher_marks') }}">📝 Marks</a>
+{% endblock %}
+{% block content %}
+<h1>Enter Student Marks</h1>
+<div class="card">
+  <form method="GET" class="form-row" style="align-items:flex-end;">
+    <div class="field" style="max-width:260px;">
+      <label>Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">— choose —</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id==c.id }}>{{ c.class_name }} {{ c.section or '' }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+{% if class_id %}
+<div class="card">
+  <form method="POST">
+    <input type="hidden" name="class_id" value="{{ class_id }}">
+    <div class="form-row">
+      <div class="field"><label>Student</label>
+        <select name="student_id" required>
+          {% for s in students %}<option value="{{ s.id }}">{{ s.full_name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field"><label>Course</label>
+        <select name="course_id" required>
+          {% for c in courses %}<option value="{{ c.id }}">{{ c.course_name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field"><label>Exam Type</label>
+        <select name="exam_type">
+          <option>Quiz</option><option>Midterm</option><option>Final</option><option>Assignment</option>
+        </select>
+      </div>
+      <div class="field"><label>Marks Obtained</label><input type="number" step="0.1" name="marks_obtained" required></div>
+      <div class="field"><label>Max Marks</label><input type="number" step="0.1" name="max_marks" required></div>
+    </div>
+    <button class="btn" type="submit">💾 Save Marks</button>
+  </form>
+</div>
+<div class="card">
+  <table>
+    <tr><th>Student</th><th>Course</th><th>Exam</th><th>Obtained</th><th>Max</th></tr>
+    {% for m in marks %}
+    <tr><td>{{ m.student_name }}</td><td>{{ m.course_name }}</td><td>{{ m.exam_type }}</td>
+        <td>{{ m.marks_obtained }}</td><td>{{ m.max_marks }}</td></tr>
+    {% else %}
+    <tr><td colspan="5" class="muted">No marks recorded yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+{% endblock %}

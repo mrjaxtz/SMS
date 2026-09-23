@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Manage Students{% endblock %}
+{% block nav %}
+<a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a>
+<a href="{{ url_for('admin_teachers') }}">👩‍🏫 Teachers</a>
+<a class="active" href="{{ url_for('admin_students') }}">🧑‍🎓 Students</a>
+<a href="{{ url_for('admin_classes') }}">🏫 Classes</a>
+<a href="{{ url_for('admin_courses') }}">📚 Courses</a>
+{% endblock %}
+{% block content %}
+<h1>Student Enrollment &amp; Records</h1>
+
+<div class="card">
+  <h3 style="margin-top:0;">Enroll New Student</h3>
+  <form method="POST">
+    <input type="hidden" name="action" value="add">
+    <div class="form-row">
+      <div class="field"><label>Full Name</label><input name="full_name" required></div>
+      <div class="field"><label>Username</label><input name="username" required></div>
+      <div class="field"><label>Password</label><input type="password" name="password" required></div>
+      <div class="field"><label>Roll No.</label><input name="roll_no"></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Class</label>
+        <select name="class_id">
+          <option value="">Unassigned</option>
+          {% for c in classes %}<option value="{{ c.id }}">{{ c.class_name }} {{ c.section or '' }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field"><label>Phone</label><input name="phone"></div>
+      <div class="field"><label>Date of Birth</label><input type="date" name="dob"></div>
+      <div class="field"><label>Email</label><input type="email" name="email"></div>
+    </div>
+    <button class="btn" type="submit">➕ Enroll Student</button>
+  </form>
+</div>
+
+<div class="card">
+  <form method="GET" style="margin-bottom:14px;">
+    <div class="form-row" style="align-items:flex-end;">
+      <div class="field" style="max-width:280px;"><label>Search by name or roll no.</label>
+        <input name="q" value="{{ search }}" placeholder="Type to search…"></div>
+      <div class="field" style="flex:0;"><button class="btn small" type="submit">Search</button></div>
+      {% if search %}<div class="field" style="flex:0;"><a class="btn small danger" href="{{ url_for('admin_students') }}">Clear</a></div>{% endif %}
+    </div>
+  </form>
+  <table>
+    <tr><th>Name</th><th>Username</th><th>Roll No</th><th>Class</th><th>Phone</th><th></th></tr>
+    {% for s in students %}
+    <tr>
+      <td>{{ s.full_name }}</td><td>{{ s.username }}</td><td>{{ s.roll_no or '-' }}</td>
+      <td>{{ s.class_name }}</td><td>{{ s.phone or '-' }}</td>
+      <td>
+        <form method="POST" style="display:inline" onsubmit="return confirm('Delete this student?');">
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="user_id" value="{{ s.user_id }}">
+          <button class="btn danger small" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="muted">No students found.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

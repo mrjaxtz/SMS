@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Manage Classes{% endblock %}
+{% block nav %}
+<a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a>
+<a href="{{ url_for('admin_teachers') }}">👩‍🏫 Teachers</a>
+<a href="{{ url_for('admin_students') }}">🧑‍🎓 Students</a>
+<a class="active" href="{{ url_for('admin_classes') }}">🏫 Classes</a>
+<a href="{{ url_for('admin_courses') }}">📚 Courses</a>
+{% endblock %}
+{% block content %}
+<h1>Manage Classes</h1>
+<div class="card">
+  <h3 style="margin-top:0;">Add New Class</h3>
+  <form method="POST">
+    <input type="hidden" name="action" value="add">
+    <div class="form-row">
+      <div class="field"><label>Class Name (e.g. Grade 10)</label><input name="class_name" required></div>
+      <div class="field"><label>Section (e.g. A)</label><input name="section"></div>
+      <div class="field"><label>Class Teacher</label>
+        <select name="teacher_id">
+          <option value="">Unassigned</option>
+          {% for t in teachers %}<option value="{{ t.id }}">{{ t.full_name }}</option>{% endfor %}
+        </select>
+      </div>
+    </div>
+    <button class="btn" type="submit">➕ Add Class</button>
+  </form>
+</div>
+<div class="card">
+  <table>
+    <tr><th>Class</th><th>Section</th><th>Class Teacher</th><th></th></tr>
+    {% for c in classes %}
+    <tr>
+      <td>{{ c.class_name }}</td><td>{{ c.section or '-' }}</td><td>{{ c.teacher_name }}</td>
+      <td>
+        <form method="POST" style="display:inline" onsubmit="return confirm('Delete this class?');">
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="class_id" value="{{ c.id }}">
+          <button class="btn danger small" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="muted">No classes yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

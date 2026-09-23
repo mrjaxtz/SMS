@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Mark Attendance{% endblock %}
+{% block nav %}
+<a href="{{ url_for('teacher_dashboard') }}">🏫 My Classes</a>
+<a href="{{ url_for('teacher_students') }}">🧑‍🎓 Students</a>
+<a class="active" href="{{ url_for('teacher_attendance') }}">✅ Mark Attendance</a>
+<a href="{{ url_for('teacher_marks') }}">📝 Marks</a>
+{% endblock %}
+{% block content %}
+<h1>Mark Attendance</h1>
+<div class="card">
+  <form method="GET" class="form-row" style="align-items:flex-end;">
+    <div class="field" style="max-width:260px;">
+      <label>Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">— choose —</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id==c.id }}>{{ c.class_name }} {{ c.section or '' }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+{% if class_id %}
+<form method="POST">
+  <input type="hidden" name="class_id" value="{{ class_id }}">
+  <div class="card">
+    <div class="field" style="max-width:220px;">
+      <label>Date</label>
+      <input type="date" name="date" value="{{ today }}">
+    </div>
+    {% for s in students %}
+    <div style="display:flex; align-items:center; padding:8px 0; border-bottom:1px solid var(--border);">
+      <div style="width:220px;">{{ s.full_name }}</div>
+      <div class="radio-group">
+        <label><input type="radio" name="status_{{ s.id }}" value="Present" checked> Present</label>
+        <label><input type="radio" name="status_{{ s.id }}" value="Absent"> Absent</label>
+        <label><input type="radio" name="status_{{ s.id }}" value="Late"> Late</label>
+      </div>
+    </div>
+    {% else %}
+    <p class="muted">No students in this class.</p>
+    {% endfor %}
+    {% if students %}<button class="btn" type="submit" style="margin-top:16px;">💾 Save Attendance</button>{% endif %}
+  </div>
+</form>
+{% endif %}
+{% endblock %}

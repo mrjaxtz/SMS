@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ meta.title }} — Login{% endblock %}
+{% block bare_content %}
+<div class="login-wrap">
+  <div class="login-brand" style="background:{{ meta.accent }}; position:relative;">
+    {% if role != 'admin' %}
+    <a class="back-link" href="{{ url_for('portal_select') }}">← All portals</a>
+    {% endif %}
+    <div class="icon">{{ meta.icon }}</div>
+    <h1>{{ meta.title }}</h1>
+    <p>Student Management System</p>
+  </div>
+  <div class="login-form-side">
+    <form class="login-card" method="POST">
+      <h2>Welcome back</h2>
+      <p class="muted" style="margin:0 0 20px;">Log in to the {{ meta.title }}</p>
+      <div class="field">
+        <label>Username</label>
+        <input type="text" name="username" required autofocus>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" name="password" required>
+      </div>
+      <button class="btn" type="submit" style="background:{{ meta.accent }}; margin-top:8px;">Log In</button>
+      {% if role == 'admin' %}
+      <p class="hint">Default login → admin / admin123</p>
+      {% else %}
+      <p class="hint">Use the login your admin created for you</p>
+      {% endif %}
+    </form>
+  </div>
+</div>
+{% endblock %}

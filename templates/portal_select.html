@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Choose Portal — Student Management System{% endblock %}
+{% block bare_content %}
+<div class="portal-wrap">
+  <div class="portal-title">🎓 Student Management System</div>
+  <div class="portal-sub">Choose how you'd like to sign in</div>
+  <div class="portal-row">
+    {% for key, meta in roles.items() %}
+    <a class="portal-card" style="--card-accent: {{ meta.accent }}" href="{{ url_for('login', role=key) }}">
+      <div class="portal-icon">{{ meta.icon }}</div>
+      <h3>{{ meta.title }}</h3>
+      <p>{{ 'Classes, attendance & marks' if key == 'teacher' else 'Grades, attendance & schedule' }}</p>
+      <div class="portal-enter" style="color:{{ meta.accent }}">Enter →</div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

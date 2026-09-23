@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block nav %}
+<a class="active" href="{{ url_for('student_dashboard') }}">🙍 My Profile</a>
+<a href="{{ url_for('student_marks') }}">📝 My Marks</a>
+<a href="{{ url_for('student_attendance') }}">✅ My Attendance</a>
+{% endblock %}
+{% block content %}
+<h1>My Profile</h1>
+<div class="card">
+  {% set rows = [
+      ('Full Name', session.full_name),
+      ('Username', session.username),
+      ('Roll No.', student.roll_no if student else '-'),
+      ('Class', (class_row.class_name ~ ' ' ~ (class_row.section or '')) if class_row else 'Unassigned'),
+      ('Phone', student.phone if student and student.phone else '-'),
+      ('Date of Birth', student.dob if student and student.dob else '-'),
+  ] %}
+  {% for label, value in rows %}
+  <div style="display:flex; padding:8px 0; border-bottom:1px solid var(--border);">
+    <div style="width:160px; color:var(--muted); font-size:.85rem;">{{ label }}</div>
+    <div>{{ value }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

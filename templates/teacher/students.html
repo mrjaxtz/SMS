@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Students{% endblock %}
+{% block nav %}
+<a href="{{ url_for('teacher_dashboard') }}">🏫 My Classes</a>
+<a class="active" href="{{ url_for('teacher_students') }}">🧑‍🎓 Students</a>
+<a href="{{ url_for('teacher_attendance') }}">✅ Mark Attendance</a>
+<a href="{{ url_for('teacher_marks') }}">📝 Marks</a>
+{% endblock %}
+{% block content %}
+<h1>Students in My Classes</h1>
+<div class="card">
+  <form method="GET" class="form-row" style="align-items:flex-end;">
+    <div class="field" style="max-width:260px;">
+      <label>Select Class</label>
+      <select name="class_id" onchange="this.form.submit()">
+        <option value="">— choose —</option>
+        {% for c in classes %}
+        <option value="{{ c.id }}" {{ 'selected' if class_id==c.id }}>{{ c.class_name }} {{ c.section or '' }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+{% if class_id %}
+<div class="card">
+  <table>
+    <tr><th>Name</th><th>Roll No</th><th>Phone</th></tr>
+    {% for s in students %}
+    <tr><td>{{ s.full_name }}</td><td>{{ s.roll_no or '-' }}</td><td>{{ s.phone or '-' }}</td></tr>
+    {% else %}
+    <tr><td colspan="3" class="muted">No students in this class.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+{% endblock %}

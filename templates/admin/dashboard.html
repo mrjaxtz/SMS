@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block nav %}
+<a class="active" href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a>
+<a href="{{ url_for('admin_teachers') }}">👩‍🏫 Teachers</a>
+<a href="{{ url_for('admin_students') }}">🧑‍🎓 Students</a>
+<a href="{{ url_for('admin_classes') }}">🏫 Classes</a>
+<a href="{{ url_for('admin_courses') }}">📚 Courses</a>
+{% endblock %}
+{% block content %}
+<h1>Dashboard Overview</h1>
+<div class="stat-row">
+  {% for label, value in counts.items() %}
+  <div class="stat"><div class="num">{{ value }}</div><div class="label">{{ label }}</div></div>
+  {% endfor %}
+</div>
+<p class="muted">Welcome back, {{ session.full_name }}.</p>
+{% endblock %}

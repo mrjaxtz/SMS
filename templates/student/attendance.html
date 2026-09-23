@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}My Attendance{% endblock %}
+{% block nav %}
+<a href="{{ url_for('student_dashboard') }}">🙍 My Profile</a>
+<a href="{{ url_for('student_marks') }}">📝 My Marks</a>
+<a class="active" href="{{ url_for('student_attendance') }}">✅ My Attendance</a>
+{% endblock %}
+{% block content %}
+<h1>My Attendance</h1>
+<div class="stat-row">
+  <div class="stat"><div class="num">{{ summary if summary is not none else 0 }}%</div><div class="label">Overall Attendance</div></div>
+</div>
+<div class="card">
+  <table>
+    <tr><th>Date</th><th>Status</th></tr>
+    {% for r in rows %}
+    <tr><td>{{ r.date }}</td><td>{{ r.status }}</td></tr>
+    {% else %}
+    <tr><td colspan="2" class="muted">No attendance records yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

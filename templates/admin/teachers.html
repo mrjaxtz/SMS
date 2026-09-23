@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Manage Teachers{% endblock %}
+{% block nav %}
+<a href="{{ url_for('admin_dashboard') }}">📊 Dashboard</a>
+<a class="active" href="{{ url_for('admin_teachers') }}">👩‍🏫 Teachers</a>
+<a href="{{ url_for('admin_students') }}">🧑‍🎓 Students</a>
+<a href="{{ url_for('admin_classes') }}">🏫 Classes</a>
+<a href="{{ url_for('admin_courses') }}">📚 Courses</a>
+{% endblock %}
+{% block content %}
+<h1>Manage Teachers</h1>
+
+<div class="card">
+  <h3 style="margin-top:0;">Add New Teacher</h3>
+  <form method="POST">
+    <input type="hidden" name="action" value="add">
+    <div class="form-row">
+      <div class="field"><label>Full Name</label><input name="full_name" required></div>
+      <div class="field"><label>Username</label><input name="username" required></div>
+      <div class="field"><label>Password</label><input type="password" name="password" required></div>
+    </div>
+    <div class="form-row">
+      <div class="field"><label>Subject</label><input name="subject"></div>
+      <div class="field"><label>Phone</label><input name="phone"></div>
+      <div class="field"><label>Email</label><input type="email" name="email"></div>
+    </div>
+    <button class="btn" type="submit">➕ Add Teacher</button>
+  </form>
+</div>
+
+<div class="card">
+  <table>
+    <tr><th>Name</th><th>Username</th><th>Subject</th><th>Phone</th><th>Email</th><th></th></tr>
+    {% for t in teachers %}
+    <tr>
+      <td>{{ t.full_name }}</td><td>{{ t.username }}</td><td>{{ t.subject or '-' }}</td>
+      <td>{{ t.phone or '-' }}</td><td>{{ t.email or '-' }}</td>
+      <td>
+        <form method="POST" style="display:inline" onsubmit="return confirm('Delete this teacher?');">
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="user_id" value="{{ t.user_id }}">
+          <button class="btn danger small" type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="muted">No teachers yet.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

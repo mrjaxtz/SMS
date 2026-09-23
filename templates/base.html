@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Student Management System{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if session.user_id %}
+<div class="shell">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="avatar">{{ session.full_name.split()[0][0]|upper }}{{ (session.full_name.split()[1][0]|upper) if session.full_name.split()|length > 1 else '' }}</div>
+      <h3>{{ session.role|capitalize }}</h3>
+      <p>{{ session.full_name }}</p>
+    </div>
+    <hr>
+    <div class="nav">
+      {% block nav %}{% endblock %}
+    </div>
+    <div class="spacer"></div>
+    <hr>
+    <div class="nav"><a href="{{ url_for('logout') }}">🚪 Logout</a></div>
+  </div>
+  <div class="content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+        <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </div>
+</div>
+{% else %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, msg in messages %}
+      <div class="flash {{ category }}" style="max-width:380px;margin:20px auto 0;">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block bare_content %}{% endblock %}
+{% endif %}
+</body>
+</html>
