@@ -360,13 +360,17 @@ def student_dashboard():
 def student_marks():
     srow = _student_row()
     conn = get_connection()
-    marks = conn.execute("""
-        SELECT co.course_name, m.exam_type, m.marks_obtained, m.max_marks,
-               ROUND(100.0*m.marks_obtained/m.max_marks,1) as pct
+    raw = conn.execute("""
+        SELECT co.course_name, m.exam_type, m.marks_obtained, m.max_marks
         FROM marks m JOIN courses co ON m.course_id=co.id
         WHERE m.student_id=? ORDER BY m.date DESC
     """, (srow["id"],)).fetchall()
     conn.close()
+    # Rounding done in Python, not SQL, so it works identically on SQLite and Postgres.
+    marks = []
+    for r in raw:
+        pct = round(100.0 * r["marks_obtained"] / r["max_marks"], 1) if r["max_marks"] else 0
+        marks.append({**dict(r), "pct": pct})
     return render_template("student/marks.html", marks=marks)
 
 
@@ -377,11 +381,11 @@ def student_attendance():
     conn = get_connection()
     rows = conn.execute("SELECT date, status FROM attendance WHERE student_id=? ORDER BY date DESC",
                          (srow["id"],)).fetchall()
-    summary = conn.execute("""
-        SELECT ROUND(100.0*SUM(CASE WHEN status='Present' THEN 1 ELSE 0 END)/COUNT(*),1) as pct
-        FROM attendance WHERE student_id=?
-    """, (srow["id"],)).fetchone()["pct"]
+    all_rows = conn.execute("SELECT status FROM attendance WHERE student_id=?", (srow["id"],)).fetchall()
     conn.close()
+    total = len(all_rows)
+    present = sum(1 for r in all_rows if r["status"] == "Present")
+    summary = round(100.0 * present / total, 1) if total else None
     return render_template("student/attendance.html", rows=rows, summary=summary)
 
 
